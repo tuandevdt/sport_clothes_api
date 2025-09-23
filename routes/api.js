@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controller/controller_user');
+const categoryController = require('../controller/controller_categorie');
+
 
 // linl : http://localhost:3002/api/register
 router.post('/register', userController.register);
@@ -27,6 +29,20 @@ router.delete('/users/:id', userController.deleteUser);
 router.post('/reset-password', userController.resetPassword);
 // linl : http://localhost:3002/api/logout
 router.post('/logout', userController.logout);
+
+// Category routes
+// linl : http://localhost:3001/api/categories
+router.get('/categories', categoryController.getAllCategories);
+// linl : http://localhost:3001/api/categories/code/:code
+router.get('/categories/code/:code', categoryController.getCategoryByCode);
+// linl : http://localhost:3001/api/categories/:id
+router.get('/categories/:id', categoryController.getCategoryById);
+// linl : http://localhost:3001/api/categories/add
+router.post('/categories/add', categoryController.createCategory);
+// linl : http://localhost:3001/api/categories/:id
+router.put('/categories/:id', categoryController.updateCategory);
+// linl : http://localhost:3001/api/categories/:id
+router.delete('/categories/:id', categoryController.deleteCategory);
 
 
 module.exports = router;
