@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 const userController = require('../controller/controller_user');
 const categoryController = require('../controller/controller_categorie');
+const productController = require('../controller/controller_product');
 
 
 // linl : http://localhost:3002/api/register
@@ -43,6 +45,19 @@ router.post('/categories/add', categoryController.createCategory);
 router.put('/categories/:id', categoryController.updateCategory);
 // linl : http://localhost:3001/api/categories/:id
 router.delete('/categories/:id', categoryController.deleteCategory);
+
+
+// Product routes
+// linl : http://localhost:3002/api/products
+router.get('/products', productController.getAllProducts);  
+// linl : http://localhost:3002/api/products/:id     // lấy chi  tiết sản phẩm
+router.get('/products/:id', productController.getProductById);
+// linl : http://localhost:3002/api/products/add
+router.post('/products/add', productController.createProduct);
+// linl : http://localhost:3002/api/products/:id
+router.put('/products/:id', productController.updateProduct);     
+// linl : http://localhost:3002/api/products/:id
+router.delete('/products/:id',productController.deleteProduct);
 
 
 module.exports = router;
