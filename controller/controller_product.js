@@ -182,3 +182,102 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi xóa sản phẩm', error: error.message });
     }
 };
+
+// Tìm kiếm sản phẩm
+exports.searchProducts = async (req, res) => {
+    try {
+        const { keyword, minPrice, maxPrice } = req.query;
+        let query = {};
+
+        if (keyword) {
+            query.name = { $regex: keyword, $options: 'i' };
+        }
+
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        const products = await Product.find(query);
+        res.json(products);
+    } catch (error) {
+        console.error('Search products error:', error);
+        res.status(500).json({ message: 'Lỗi khi tìm kiếm sản phẩm', error: error.message });
+    }
+};
+
+// Cập nhật tồn kho
+exports.updateStock = async (req, res) => {
+    try {
+        const { stock } = req.body;
+        const objectId = new Types.ObjectId(req.params.id);
+
+        const product = await Product.findById(objectId);
+        if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+
+        if (stock < 0) {
+            return res.status(400).json({ message: 'Số lượng tồn kho không hợp lệ' });
+        }
+
+        product.stock = stock;
+        const updatedProduct = await product.save();
+        res.json({ message: 'Cập nhật số lượng tồn kho thành công', product: updatedProduct });
+    } catch (error) {
+        console.error('Update stock error:', error);
+        res.status(500).json({ message: 'Lỗi khi cập nhật số lượng tồn kho', error: error.message });
+    }
+};
+
+// Lấy sản phẩm theo category code
+exports.getProductsByCategory = async (req, res) => {
+    try {
+        const { categoryCode } = req.params;
+        
+        if (!categoryCode) {
+            return res.status(400).json({ message: 'Category code là bắt buộc' });
+        }
+
+        const products = await Product.find({ categoryCode: categoryCode.toLowerCase() });
+        
+        if (products.length === 0) {
+            return res.status(404).json({ 
+                message: 'Không tìm thấy sản phẩm nào cho category này',
+                categoryCode: categoryCode,
+                products: []
+            });
+        }
+
+        res.json({
+            message: 'Lấy sản phẩm theo category thành công',
+            categoryCode: categoryCode,
+            count: products.length,
+            products: products
+        });
+    } catch (error) {
+        console.error('Get products by category error:', error);
+        res.status(500).json({ message: 'Lỗi khi lấy sản phẩm theo category', error: error.message });
+    }
+};
+
+// Cập nhật số lượng đã bán
+exports.updateSoldQuantity = async (req, res) => {
+    try {
+        const { sold } = req.body;
+        const objectId = new Types.ObjectId(req.params.id);
+
+        const product = await Product.findById(objectId);
+        if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+
+        if (sold < 0) {
+            return res.status(400).json({ message: 'Số lượng đã bán không hợp lệ' });
+        }
+
+        product.sold = sold;
+        const updatedProduct = await product.save();
+        res.json({ message: 'Cập nhật số lượng đã bán thành công', product: updatedProduct });
+    } catch (error) {
+        console.error('Update sold quantity error:', error);
+        res.status(500).json({ message: 'Lỗi khi cập nhật số lượng đã bán', error: error.message });
+    }
+};

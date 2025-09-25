@@ -58,6 +58,13 @@ router.post('/products/add', productController.createProduct);
 router.put('/products/:id', productController.updateProduct);     
 // linl : http://localhost:3002/api/products/:id
 router.delete('/products/:id',productController.deleteProduct);
+// linl : http://localhost:3002/api/products/search
+router.get('/products/search', productController.searchProducts);
+// linl : http://localhost:3002/api/products/category/:categoryCode
+router.get('/products/category/:categoryCode', productController.getProductsByCategory);
+// linl : http://localhost:3002/api/products/:id/stock
+router.put('/products/:id/stock', productController.updateStock);
+
 
 
 module.exports = router;
