@@ -64,7 +64,17 @@ router.get('/products/search', productController.searchProducts);
 router.get('/products/category/:categoryCode', productController.getProductsByCategory);
 // linl : http://localhost:3002/api/products/:id/stock
 router.put('/products/:id/stock', productController.updateStock);
+// link: http://localhost:3001/api/products/:productId/detail/:userId
+router.get('/products/:productId/detail/:userId', favoriteController.getProductDetailWithFavoriteAndComments);
 
+
+// Comment routes
+// link: http://localhost:3001/api/comments/:productId (lấy tất cả comment của sản phẩm)
+router.get('/comments/:productId', commentController.getProductDetailWithComments);
+// link: http://localhost:3001/api/comments/add (thêm comment mới)
+router.post('/comments/add', commentController.createComment);
+//(thêm nhiều comment mới)
+router.post('/comments/add-multi', commentController.createMultipleComments);
 
 
 module.exports = router;
