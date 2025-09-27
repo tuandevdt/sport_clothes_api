@@ -77,4 +77,17 @@ router.post('/comments/add', commentController.createComment);
 router.post('/comments/add-multi', commentController.createMultipleComments);
 
 
+// Cart routes
+// link: http://localhost:3002/api/carts
+router.get('/carts', cartController.getAllCarts);
+router.put('/carts/:user_id/item', cartController.updateItemQuantity);
+router.delete('/carts/:user_id/item', cartController.deleteItemFromCart);
+router.delete('/carts/:user_id', cartController.deleteCartByUserId);
+// link: http://localhost:3002/api/carts/id/:id
+router.get('/carts/id/:id', cartController.getCartById);
+router.post('/carts/add', cartController.addToCart);
+router.put('/carts/upsert', cartController.upsertCart);
+
+router.get('/carts/:user_id', cartController.getCartByUserId);
+
 module.exports = router;
