@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const userController = require('../controller/controller_user');
 const categoryController = require('../controller/controller_categorie');
 const productController = require('../controller/controller_product');
+const saleProductController = require('../controller/controller_sale_product');
 
 
 // linl : http://localhost:3002/api/register
@@ -67,6 +68,23 @@ router.put('/products/:id/stock', productController.updateStock);
 // link: http://localhost:3001/api/products/:productId/detail/:userId
 router.get('/products/:productId/detail/:userId', favoriteController.getProductDetailWithFavoriteAndComments);
 
+// của bình luộn
+// linl : http://localhost:3002/api/products/:id/detail
+router.get('/products/:id/detail', productController.getProductDetailWithComments);
+// link: http://localhost:3002/api/sale-products/:id/detail
+router.get('/sale-products/:id/detail', saleProductController.getSaleProductDetailWithComments);
+
+// Sale Product routes
+// link: http://localhost:3002/api/sale-products
+router.get('/sale-products', saleProductController.getAllSaleProducts);
+// link: http://localhost:3002/api/sale-products/:id
+router.get('/sale-products/:id', saleProductController.getSaleProductById);
+// link: http://localhost:3002/api/sale-products/add
+router.post('/sale-products/add', saleProductController.createSaleProduct);
+// link: http://localhost:3002/api/sale-products/:id
+router.put('/sale-products/:id', saleProductController.updateSaleProduct);
+// link: http://localhost:3002/api/sale-products/:id
+router.delete('/sale-products/:id', saleProductController.deleteSaleProduct);
 
 // Comment routes
 // link: http://localhost:3001/api/comments/:productId (lấy tất cả comment của sản phẩm)
