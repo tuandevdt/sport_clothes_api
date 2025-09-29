@@ -85,6 +85,18 @@ router.post('/sale-products/add', saleProductController.createSaleProduct);
 router.put('/sale-products/:id', saleProductController.updateSaleProduct);
 // link: http://localhost:3002/api/sale-products/:id
 router.delete('/sale-products/:id', saleProductController.deleteSaleProduct);
+// link: http://localhost:3002/api/sale-products/search
+router.get('/sale-products/search', saleProductController.searchSaleProducts);
+// link: http://localhost:3002/api/sale-products/category/:categoryCode
+router.get('/sale-products/category/:categoryCode', saleProductController.getSaleProductsByCategory);
+// link: http://localhost:3002/api/sale-products/top-discount
+router.get('/sale-products/top-discount', saleProductController.getTopDiscountProducts);
+// link: http://localhost:3002/api/sale-products/:id/discount-status
+router.put('/sale-products/:id/discount-status', saleProductController.updateDiscountStatus);
+// link: http://localhost:3002/api/sale-products/:id/sold
+router.put('/sale-products/:id/sold', saleProductController.updateSoldCount);
+// link: http://localhost:3002/api/sale-products/best-selling
+router.get('/sale-products/best-selling', saleProductController.getBestSellingProducts);
 
 // Comment routes
 // link: http://localhost:3001/api/comments/:productId (lấy tất cả comment của sản phẩm)

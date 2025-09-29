@@ -323,6 +323,230 @@ exports.deleteSaleProduct = async (req, res) => {
     }
 };
 
+// Tìm kiếm sản phẩm khuyến mãi
+exports.searchSaleProducts = async (req, res) => {
+    try {
+        const { keyword, minPrice, maxPrice, minDiscount, maxDiscount } = req.query;
+        let query = {};
+
+        if (keyword) {
+            query.name = { $regex: keyword, $options: 'i' };
+        }
+
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        if (minDiscount || maxDiscount) {
+            query.discount_percent = {};
+            if (minDiscount) query.discount_percent.$gte = Number(minDiscount);
+            if (maxDiscount) query.discount_percent.$lte = Number(maxDiscount);
+        }
+
+        const saleProducts = await SaleProduct.find(query);
+
+        res.json({
+            status: 200,
+            message: "Tìm kiếm sản phẩm khuyến mãi thành công",
+            data: saleProducts
+        });
+    } catch (error) {
+        console.error('Search sale products error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi tìm kiếm sản phẩm khuyến mãi',
+            error: error.message
+        });
+    }
+};
+
+// Lấy sản phẩm khuyến mãi theo category code
+exports.getSaleProductsByCategory = async (req, res) => {
+    try {
+        const { categoryCode } = req.params;
+
+        if (!categoryCode) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Category code là bắt buộc'
+            });
+        }
+
+        const saleProducts = await SaleProduct.find({ categoryCode: categoryCode.toLowerCase() });
+
+        if (saleProducts.length === 0) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Không tìm thấy sản phẩm khuyến mãi nào cho category này',
+                categoryCode: categoryCode,
+                data: []
+            });
+        }
+
+        res.json({
+            status: 200,
+            message: "Lấy sản phẩm khuyến mãi theo category thành công",
+            categoryCode: categoryCode,
+            data: saleProducts
+        });
+    } catch (error) {
+        console.error('Get sale products by category error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi lấy sản phẩm khuyến mãi theo category',
+            error: error.message
+        });
+    }
+};
+
+// Lấy sản phẩm khuyến mãi có discount cao nhất
+exports.getTopDiscountProducts = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+
+        const saleProducts = await SaleProduct.find({ isDiscount: true })
+            .sort({ discount_percent: -1 })
+            .limit(Number(limit));
+
+        res.json({
+            status: 200,
+            message: "Lấy sản phẩm khuyến mãi cao nhất thành công",
+            data: saleProducts
+        });
+    } catch (error) {
+        console.error('Get top discount products error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi lấy sản phẩm khuyến mãi cao nhất',
+            error: error.message
+        });
+    }
+};
+
+// Cập nhật trạng thái khuyến mãi
+exports.updateDiscountStatus = async (req, res) => {
+    try {
+        const { isDiscount } = req.body;
+        const objectId = new Types.ObjectId(req.params.id);
+
+        const saleProduct = await SaleProduct.findById(objectId);
+        if (!saleProduct) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Không tìm thấy sản phẩm khuyến mãi'
+            });
+        }
+
+        saleProduct.isDiscount = isDiscount;
+        const updatedSaleProduct = await saleProduct.save();
+
+        res.json({
+            status: 200,
+            message: 'Cập nhật trạng thái khuyến mãi thành công',
+            data: updatedSaleProduct
+        });
+    } catch (error) {
+        console.error('Update discount status error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi cập nhật trạng thái khuyến mãi',
+            error: error.message
+        });
+    }
+};
+
+// Cập nhật số lượng đã bán khi có đơn hàng
+exports.updateSoldCount = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { quantity } = req.body;
+
+        if (!Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                status: 400,
+                message: "ID không hợp lệ",
+                data: null
+            });
+        }
+
+        if (!quantity || quantity <= 0) {
+            return res.status(400).json({
+                status: 400,
+                message: "Số lượng phải lớn hơn 0",
+                data: null
+            });
+        }
+
+        const objectId = new Types.ObjectId(id);
+        const saleProduct = await SaleProduct.findById(objectId);
+
+        if (!saleProduct) {
+            return res.status(404).json({
+                status: 404,
+                message: "Không tìm thấy sản phẩm khuyến mãi",
+                data: null
+            });
+        }
+
+        // Kiểm tra xem có đủ hàng trong kho không
+        if (saleProduct.stock < quantity) {
+            return res.status(400).json({
+                status: 400,
+                message: "Không đủ hàng trong kho",
+                data: {
+                    available: saleProduct.stock,
+                    requested: quantity
+                }
+            });
+        }
+
+        // Cập nhật số lượng đã bán và tồn kho
+        saleProduct.sold += quantity;
+        saleProduct.stock -= quantity;
+
+        const updatedSaleProduct = await saleProduct.save();
+
+        res.json({
+            status: 200,
+            message: "Cập nhật số lượng đã bán thành công",
+            data: updatedSaleProduct
+        });
+    } catch (error) {
+        console.error('Update sold count error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi cập nhật số lượng đã bán',
+            error: error.message
+        });
+    }
+};
+
+// Lấy sản phẩm bán chạy nhất
+exports.getBestSellingProducts = async (req, res) => {
+    try {
+        const { limit = 10 } = req.query;
+
+        const saleProducts = await SaleProduct.find()
+            .sort({ sold: -1 })
+            .limit(Number(limit));
+
+        res.json({
+            status: 200,
+            message: "Lấy sản phẩm bán chạy nhất thành công",
+            data: saleProducts
+        });
+    } catch (error) {
+        console.error('Get best selling products error:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Lỗi khi lấy sản phẩm bán chạy nhất',
+            error: error.message
+        });
+    }
+};
+
 exports.getSaleProductDetailWithComments = async (req, res) => {
     try {
         const { id } = req.params;
