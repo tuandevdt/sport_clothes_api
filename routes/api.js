@@ -7,6 +7,7 @@ const categoryController = require('../controller/controller_categorie');
 const productController = require('../controller/controller_product');
 const saleProductController = require('../controller/controller_sale_product');
 const favoriteController = require('../controller/controller_favorite');
+const addressController = require('../controller/controller_address');
 
 // linl : http://localhost:3002/api/register
 router.post('/register', userController.register);
@@ -134,5 +135,22 @@ router.post('/carts/add', cartController.addToCart);
 router.put('/carts/upsert', cartController.upsertCart);
 
 router.get('/carts/:user_id', cartController.getCartByUserId);
+
+// Address routes
+// link: http://localhost:3001/api/addresses/user/:id_user
+router.get('/addresses/user/:id_user', addressController.getAddressesByUser);
+// link: http://localhost:3001/api/addresses/:id
+router.get('/addresses/:id', addressController.getAddressById);
+// link: http://localhost:3001/api/addresses
+router.post('/addresses', addressController.createAddress);
+// link: http://localhost:3001/api/addresses/:id
+router.put('/addresses/:id', addressController.updateAddress);
+// link: http://localhost:3001/api/addresses/:id
+router.delete('/addresses/:id', addressController.deleteAddress);
+// link: http://localhost:3001/api/addresses/:id/default
+router.put('/addresses/:id/default', addressController.setDefaultAddress);
+// link: http://localhost:3001/api/addresses/default/:id_user
+router.get('/addresses/default/:id_user', addressController.getDefaultAddress);
+
 
 module.exports = router;
