@@ -8,6 +8,8 @@ const productController = require('../controller/controller_product');
 const saleProductController = require('../controller/controller_sale_product');
 const favoriteController = require('../controller/controller_favorite');
 const addressController = require('../controller/controller_address');
+const bannerController = require('../controller/controller_banner');
+const postController = require('../controller/postController');
 
 // linl : http://localhost:3002/api/register
 router.post('/register', userController.register);
@@ -152,5 +154,41 @@ router.put('/addresses/:id/default', addressController.setDefaultAddress);
 // link: http://localhost:3001/api/addresses/default/:id_user
 router.get('/addresses/default/:id_user', addressController.getDefaultAddress);
 
+// Banner routes
+// link: http://localhost:3001/api/banners
+router.get('/banners', bannerController.getAllBanners);
+// link: http://localhost:3001/api/banners/active
+router.get('/banners/active', bannerController.getActiveBanners);
+// link: http://localhost:3001/api/banners/:id
+router.get('/banners/:id', bannerController.getBannerById);
+// link: http://localhost:3001/api/banners
+router.post('/banners', bannerController.createBanner);
+// link: http://localhost:3001/api/banners/:id
+router.put('/banners/:id', bannerController.updateBanner);
+// link: http://localhost:3001/api/banners/:id
+router.delete('/banners/:id', bannerController.deleteBanner);
+// link: http://localhost:3001/api/banners/:id/toggle
+router.put('/banners/:id/toggle', bannerController.toggleBannerStatus);
+
+// Post routes
+// CRUD routes
+// link: http://localhost:3001/api/posts
+router.get('/posts', postController.getAllPosts);
+// link: http://localhost:3001/api/posts/:id
+router.get('/posts/:id', postController.getPostById);
+// link: http://localhost:3001/api/posts
+router.post('/posts', postController.createPost);
+// link: http://localhost:3001/api/posts/:id
+router.put('/posts/:id', postController.updatePost);
+// link: http://localhost:3001/api/posts/:id
+router.delete('/posts/:id', postController.deletePost);
+
+// Tìm kiếm và lọc
+// link: http://localhost:3001/api/posts/product/:productId
+router.get('/posts/product/:productId', postController.getPostsByProduct);
+// link: http://localhost:3001/api/posts/tag/:tag
+router.get('/posts/tag/:tag', postController.getPostsByTag);
+// link: http://localhost:3001/api/posts/search
+router.get('/posts/search', postController.searchPosts);
 
 module.exports = router;
