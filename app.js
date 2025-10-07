@@ -1,5 +1,6 @@
 // app.js
 
+var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -9,11 +10,32 @@ var http = require('http');
 require('./model/db'); // Kết nối MongoDB
 
 var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 var app = express();
 
 // 🔌 Tạo HTTP Server
 const server = http.createServer(app);
+
+// 🔌 Khởi tạo Socket.IO
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['*'],
+    credentials: true,
+  },
+  transports: ['websocket', 'polling']
+});
+app.set('io', io);
+
+// 🧠 Nạp socket handlers (nếu không dùng notification thì bỏ dòng đó)
+const initializeChatSocket = require('./socketHandlers/chatHandlers');
+const initializeNotificationSocket = require('./socketHandlers/notificationHandlers');
+const initializeOrderSocket = require('./socketHandlers/orderStatus'); // ✅ Đúng file socket
+initializeOrderSocket(io);
+initializeChatSocket(io);
+initializeNotificationSocket(io);
 
 
 // Middleware
@@ -32,7 +54,13 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', indexRouter);
+app.use('/users', usersRouter);
 app.use('/api', apiRouter);
+
+// 404 handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
 
 
 // Error handler

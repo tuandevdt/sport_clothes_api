@@ -10,6 +10,8 @@ const favoriteController = require('../controller/controller_favorite');
 const addressController = require('../controller/controller_address');
 const bannerController = require('../controller/controller_banner');
 const postController = require('../controller/postController');
+const orderController = require('../controller/controller_order');
+
 
 // linl : http://localhost:3002/api/register
 router.post('/register', userController.register);
@@ -190,5 +192,17 @@ router.get('/posts/product/:productId', postController.getPostsByProduct);
 router.get('/posts/tag/:tag', postController.getPostsByTag);
 // link: http://localhost:3001/api/posts/search
 router.get('/posts/search', postController.searchPosts);
+
+// Order routes
+// linl : http://localhost:3001/api/orders
+router.post('/orders', orderController.createOrder);
+// linl : http://localhost:3001/api/orders      
+router.get('/orders', orderController.getAllOrders);
+// linl : http://localhost:3001/api/orders/user/:userId
+router.get('/orders/user/:userId', orderController.getOrdersByUserId);
+// linl : http://localhost:3001/api/orders/:id
+router.get('/orders/:id', orderController.getOrderById);
+// linl : http://localhost:3001/api/orders/:id/status
+router.put('/orders/:id/status', orderController.updateStatus);
 
 module.exports = router;
