@@ -11,6 +11,7 @@ const addressController = require('../controller/controller_address');
 const bannerController = require('../controller/controller_banner');
 const postController = require('../controller/postController');
 const orderController = require('../controller/controller_order');
+const oauthController = require('../controller/controller_oauth');
 
 
 // linl : http://localhost:3002/api/register
@@ -37,6 +38,16 @@ router.delete('/users/:id', userController.deleteUser);
 router.post('/reset-password', userController.resetPassword);
 // linl : http://localhost:3002/api/logout
 router.post('/logout', userController.logout);
+
+// OAuth routes
+// link: http://localhost:3002/api/auth/google
+router.post('/auth/google', oauthController.googleAuth);
+// link: http://localhost:3002/api/auth/facebook
+router.post('/auth/facebook', oauthController.facebookFirebaseLogin);
+// link: http://localhost:3002/api/auth/link/google
+router.post('/auth/link/google', auth, oauthController.linkGoogleAccount);
+// link: http://localhost:3002/api/auth/link/facebook
+router.post('/auth/link/facebook', auth, oauthController.linkFacebookAccount);
 
 // Category routes
 // linl : http://localhost:3001/api/categories
