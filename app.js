@@ -12,6 +12,8 @@ require('./model/db'); // Kết nối MongoDB
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
+const paymentsRoutes = require('./routes/payments');
+const vnpayRoutes = require('./routes/vnPay');
 var app = express();
 
 // 🔌 Tạo HTTP Server
@@ -56,6 +58,8 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);
+app.use('/api/payments', paymentsRoutes);
+app.use('/vnpay', vnpayRoutes);
 
 // 404 handler
 app.use(function(req, res, next) {
