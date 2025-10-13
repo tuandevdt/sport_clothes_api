@@ -12,9 +12,11 @@ require('./model/db'); // Kết nối MongoDB
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
-const paymentsRoutes = require('./routes/payments');
+const momoRoutes = require('./routes/momo');
 const vnpayRoutes = require('./routes/vnPay');
+const paymentsRoutes = require('./routes/payments');
 const zaloPayRoutes = require('./routes/zaloPay');
+
 var app = express();
 
 // 🔌 Tạo HTTP Server
@@ -40,6 +42,9 @@ initializeOrderSocket(io);
 initializeChatSocket(io);
 initializeNotificationSocket(io);
 
+// View engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // Middleware
 app.use(cors());
@@ -59,15 +64,15 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);
-app.use('/api/payments', paymentsRoutes);
+app.use('/api/momo', momoRoutes);
 app.use('/vnpay', vnpayRoutes);
+app.use('/api/payments', paymentsRoutes);
 app.use('/zalo', zaloPayRoutes);
 
 // 404 handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
 
 // Error handler
 app.use(function(err, req, res, next) {

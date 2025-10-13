@@ -1,0 +1,341 @@
+{
+	"info": {
+		"_postman_id": "zalo-pay-api-collection",
+		"name": "ZaloPay API",
+		"description": "Collection để test ZaloPay API với đầy đủ chi tiết giao dịch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tạo đơn hàng ZaloPay",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 100000,\n  \"userId\": \"test_user_123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/zalo/create-order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"create-order"
+					]
+				},
+				"description": "Tạo đơn hàng thanh toán qua ZaloPay"
+			},
+			"response": []
+		},
+		{
+			"name": "Test với số tiền 50k",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 50000,\n  \"userId\": \"user_50k\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/zalo/create-order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"create-order"
+					]
+				},
+				"description": "Test tạo đơn hàng với số tiền 50,000 VND"
+			},
+			"response": []
+		},
+		{
+			"name": "Test không có userId",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 200000\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/zalo/create-order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"create-order"
+					]
+				},
+				"description": "Test tạo đơn hàng không có userId"
+			},
+			"response": []
+		},
+		{
+			"name": "Test số tiền lớn 1M",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 1000000,\n  \"userId\": \"user_1m\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/zalo/create-order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"create-order"
+					]
+				},
+				"description": "Test tạo đơn hàng với số tiền 1,000,000 VND"
+			},
+			"response": []
+		},
+		{
+			"name": "ZaloPay Callback",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"data\": \"{\\\"app_trans_id\\\":\\\"241215_123456\\\",\\\"amount\\\":100000,\\\"status\\\":1}\",\n  \"mac\": \"calculated_mac_hash\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/zalo/callback",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"callback"
+					]
+				},
+				"description": "Mô phỏng callback từ ZaloPay (chỉ để test)"
+			},
+			"response": []
+		},
+		{
+			"name": "ZaloPay Payment Result (Success)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/zalo/payment-result?paymentMethod=zalopay&amount=100000&appid=2554&apptransid=241215_123456&status=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"payment-result"
+					],
+					"query": [
+						{
+							"key": "paymentMethod",
+							"value": "zalopay"
+						},
+						{
+							"key": "amount",
+							"value": "100000"
+						},
+						{
+							"key": "appid",
+							"value": "2554"
+						},
+						{
+							"key": "apptransid",
+							"value": "241215_123456"
+						},
+						{
+							"key": "status",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Test redirect thành công từ ZaloPay"
+			},
+			"response": []
+		},
+		{
+			"name": "ZaloPay Payment Result (Failed)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/zalo/payment-result?paymentMethod=zalopay&amount=100000&appid=2554&apptransid=241215_123456&status=0",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"payment-result"
+					],
+					"query": [
+						{
+							"key": "paymentMethod",
+							"value": "zalopay"
+						},
+						{
+							"key": "amount",
+							"value": "100000"
+						},
+						{
+							"key": "appid",
+							"value": "2554"
+						},
+						{
+							"key": "apptransid",
+							"value": "241215_123456"
+						},
+						{
+							"key": "status",
+							"value": "0"
+						}
+					]
+				},
+				"description": "Test redirect thất bại từ ZaloPay"
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Chi Tiết Giao Dịch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/zalo/transaction/250721_3694",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"transaction",
+						"250721_3694"
+					]
+				},
+				"description": "Lấy chi tiết giao dịch theo orderId"
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Danh Sách Giao Dịch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/zalo/transactions?limit=10&page=1&status=success",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "status",
+							"value": "success"
+						}
+					]
+				},
+				"description": "Lấy danh sách giao dịch với phân trang"
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Tất Cả Giao Dịch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/zalo/transactions?limit=50&page=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"zalo",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Lấy tất cả giao dịch (không filter status)"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3002",
+			"type": "string"
+		}
+	]
+} 
