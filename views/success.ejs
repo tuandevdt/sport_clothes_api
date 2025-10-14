@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thanh toán thành công</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .success {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .details {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .payment-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        <div class="success">
+            <% if (typeof message !== 'undefined') { %>
+                <%= message %>
+            <% } else { %>
+                Thanh toán thành công!
+            <% } %>
+        </div>
+        
+        <% if (typeof amount !== 'undefined') { %>
+            <div class="payment-info">
+                <p><strong>Số tiền:</strong> <%= amount.toLocaleString('vi-VN') %> VNĐ</p>
+                <% if (typeof orderId !== 'undefined') { %>
+                    <p><strong>Mã đơn hàng:</strong> <%= orderId %></p>
+                <% } %>
+            </div>
+        <% } %>
+        
+        <% if (typeof data !== 'undefined') { %>
+            <div class="details">
+                <h4>Thông tin giao dịch:</h4>
+                <p><strong>Mã giao dịch:</strong> <%= data.vnp_TransactionNo %></p>
+                <p><strong>Mã ngân hàng:</strong> <%= data.vnp_BankCode %></p>
+                <p><strong>Thời gian:</strong> <%= data.vnp_PayDate %></p>
+                <p><strong>Trạng thái:</strong> 
+                    <% if (data.vnp_ResponseCode === '00') { %>
+                        <span style="color: #28a745;">Thành công</span>
+                    <% } else { %>
+                        <span style="color: #dc3545;">Thất bại</span>
+                    <% } %>
+                </p>
+            </div>
+        <% } %>
+        
+        <a href="/" class="btn">Về trang chủ</a>
+        <a href="/orders" class="btn btn-secondary">Xem đơn hàng</a>
+    </div>
+</body>
+</html> 

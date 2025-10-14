@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .title {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📋</div>
+        <div class="title"><%= title %></div>
+        
+        <div class="message">
+            <%= message %>
+        </div>
+        
+        <div class="info-box">
+            <h4>📡 API Endpoints có sẵn:</h4>
+            <ul style="text-align: left; display: inline-block;">
+                <li><strong>GET /api/orders</strong> - Lấy tất cả đơn hàng</li>
+                <li><strong>GET /api/orders/:id</strong> - Lấy chi tiết đơn hàng</li>
+                <li><strong>GET /api/orders/user/:userId</strong> - Lấy đơn hàng theo user</li>
+                <li><strong>POST /api/orders</strong> - Tạo đơn hàng mới</li>
+                <li><strong>PUT /api/orders/:id/status</strong> - Cập nhật trạng thái đơn hàng</li>
+            </ul>
+        </div>
+        
+        <a href="/" class="btn">Về trang chủ</a>
+        <a href="/api/orders" class="btn btn-secondary">Xem API Orders</a>
+    </div>
+</body>
+</html> 
